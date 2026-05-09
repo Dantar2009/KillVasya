@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import MainContext from "./MainContext"
 import { useNavigate } from "react-router-dom"
+import { io, Socket } from "socket.io-client"
 
 type User = {
     id: number,
@@ -8,28 +9,53 @@ type User = {
     pass: string,
     rating: number
 }
+type playerInfo={
+    name:string,
+    rating:number
+}
+type Room={
+    id:string,
+    killer:playerInfo|null,
+    bodyguard:playerInfo|null,
 
+}
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
 
 const Prov = ({ children }: { children: any }) => {
     const navigate = useNavigate()
-    
+    const socketRef=useRef<Socket|null>(null)
     const [user, setUser] = useState<User | null>(() => {
         const data = localStorage.getItem("user")
         return data ? JSON.parse(data) : null
     })
-    
+    const [rooms,setRooms]=useState<Room[]>([])
     const [loginText, setLoginText] = useState<string>('')
     const [passwordText, setPasswordText] = useState<string>('')
     const [loginError, setLoginError] = useState<string>('')
     const [passwordError, setPasswordError] = useState<string>('')
-    
+    const [modalWindowActivate,setModalWindowActivate]=useState<boolean>(false)
     useEffect(() => {
         if (user) {
             localStorage.setItem("user", JSON.stringify(user))
         }
+        const socket=io(`${API_URL}`,{
+            query:{
+                name:user?.name,
+                pass:user?.pass
+            }
+        })
+        socketRef.current=socket
+        socket.on("roomsList",(rooms)=>{
+            console.log(rooms)
+            setRooms(rooms)
+        })
+        return ()=>{
+            socket.disconnect()
+        }
     }, [user])
-    
+    const createRoom=(role:string)=>{
+        socketRef.current?.emit("createRoom",{role})
+    }
     const register = async (name: string, pass: string) => {
         try {
             if (name.trim().length < 4) {
@@ -95,7 +121,13 @@ const Prov = ({ children }: { children: any }) => {
         goHome()  
     }
     
-    const goHome = () => navigate("/")
+    const goHome = () => {
+        setLoginError('')
+        setPasswordError('')
+        setLoginText('')
+        setPasswordText('')
+        navigate("/")
+    }
     const goRegister = () => {
         setLoginError('')
         setPasswordError('')
@@ -119,7 +151,9 @@ const Prov = ({ children }: { children: any }) => {
             loginError, setLoginError,
             passwordError, setPasswordError,
             register, signIn, signOut,
-            goHome, goRegister, goSignin
+            goHome, goRegister, goSignin,
+            modalWindowActivate,setModalWindowActivate,
+            rooms,createRoom
         }}>
             {children}
         </MainContext.Provider>

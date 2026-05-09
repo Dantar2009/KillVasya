@@ -1,8 +1,18 @@
 import { useContext } from "react"
 import MainContext from "../MainContext"
+import Modal from "../components/Modal"
+type playerInfo={
+    name:string,
+    rating:number
+}
+type Room={
+    id:string,
+    killer:playerInfo|null,
+    bodyguard:playerInfo|null,
 
+}
 const Home = () => {
-    const { user, goRegister, goSignin, signOut } = useContext(MainContext)
+    const { user, goRegister, goSignin, signOut,setModalWindowActivate,modalWindowActivate,rooms} = useContext(MainContext)
     
     return (
         <div>
@@ -18,6 +28,16 @@ const Home = () => {
                     <button onClick={goRegister}>Регистрация</button>
                     <button onClick={goSignin}>Вход</button>
                 </>
+            )}
+            <button onClick={()=>setModalWindowActivate(true)}>Создать комнату</button>
+            {rooms.map((item:Room)=>
+                <div key={item.id}>
+                    <p>Killer: {item.killer?.name} Rating: {item.killer?.rating}</p>
+                    <p>Bodyguard: {item.bodyguard?.name} Rating: {item.bodyguard?.rating}</p>
+                </div>
+            )}
+            {modalWindowActivate&&(
+                <Modal/>
             )}
         </div>
     )
