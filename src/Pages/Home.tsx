@@ -9,10 +9,11 @@ type Room={
     id:string,
     killer:playerInfo|null,
     bodyguard:playerInfo|null,
-
+    killerText:string|null,
+    bodyguardText:string|null
 }
 const Home = () => {
-    const { user, goRegister, goSignin, signOut,setModalWindowActivate,modalWindowActivate,rooms} = useContext(MainContext)
+    const { user, goRegister, goSignin, signOut,setModalWindowActivate,modalWindowActivate,rooms, joinRoom} = useContext(MainContext)
     
     return (
         <div>
@@ -34,6 +35,7 @@ const Home = () => {
                 <div key={item.id}>
                     <p>Killer: {item.killer?.name} Rating: {item.killer?.rating}</p>
                     <p>Bodyguard: {item.bodyguard?.name} Rating: {item.bodyguard?.rating}</p>
+                    <button onClick={()=>joinRoom(item.id)}>Присоединиться</button>
                 </div>
             )}
             {modalWindowActivate&&(

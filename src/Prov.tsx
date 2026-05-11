@@ -17,7 +17,8 @@ type Room={
     id:string,
     killer:playerInfo|null,
     bodyguard:playerInfo|null,
-
+    killerText:string|null,
+    bodyguardText:string|null
 }
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
 
@@ -38,23 +39,32 @@ const Prov = ({ children }: { children: any }) => {
         if (user) {
             localStorage.setItem("user", JSON.stringify(user))
         }
-        const socket=io(`${API_URL}`,{
-            query:{
-                name:user?.name,
-                pass:user?.pass
-            }
+        
+        const socket = io(`${API_URL}`, {
+            query: { name: user?.name, pass: user?.pass }
         })
-        socketRef.current=socket
-        socket.on("roomsList",(rooms)=>{
+        socketRef.current = socket
+        
+        socket.on("roomsList", (rooms) => {
             console.log(rooms)
             setRooms(rooms)
         })
-        return ()=>{
+        
+        socket.on("openRoom", (roomId) => {
+            console.log(`Join to room ${roomId}`)
+            navigate(`/room/${roomId}`)
+        })
+        
+        return () => {
             socket.disconnect()
         }
-    }, [user])
+    }, [user,navigate])
     const createRoom=(role:string)=>{
         socketRef.current?.emit("createRoom",{role})
+        
+    }
+    const joinRoom=(roomId:string)=>{
+        socketRef.current?.emit("joinRoom",roomId)
     }
     const register = async (name: string, pass: string) => {
         try {
@@ -153,7 +163,7 @@ const Prov = ({ children }: { children: any }) => {
             register, signIn, signOut,
             goHome, goRegister, goSignin,
             modalWindowActivate,setModalWindowActivate,
-            rooms,createRoom
+            rooms,createRoom,joinRoom
         }}>
             {children}
         </MainContext.Provider>
