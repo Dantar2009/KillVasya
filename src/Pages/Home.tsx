@@ -10,7 +10,8 @@ type Room={
     killer:playerInfo|null,
     bodyguard:playerInfo|null,
     killerText:string|null,
-    bodyguardText:string|null
+    bodyguardText:string|null,
+    location:string
 }
 const Home = () => {
     const { user, goRegister, goSignin, signOut,setModalWindowActivate,modalWindowActivate,rooms, joinRoom} = useContext(MainContext)

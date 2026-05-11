@@ -18,7 +18,8 @@ type Room={
     killer:playerInfo|null,
     bodyguard:playerInfo|null,
     killerText:string|null,
-    bodyguardText:string|null
+    bodyguardText:string|null,
+    location:string
 }
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
 
@@ -35,6 +36,7 @@ const Prov = ({ children }: { children: any }) => {
     const [loginError, setLoginError] = useState<string>('')
     const [passwordError, setPasswordError] = useState<string>('')
     const [modalWindowActivate,setModalWindowActivate]=useState<boolean>(false)
+    const [messageText,setMessageText]=useState<string>("")
     useEffect(() => {
         if (user) {
             localStorage.setItem("user", JSON.stringify(user))
@@ -65,6 +67,15 @@ const Prov = ({ children }: { children: any }) => {
     }
     const joinRoom=(roomId:string)=>{
         socketRef.current?.emit("joinRoom",roomId)
+    }
+    const sendMessage=(messageText:string, roomId:string)=>{
+        if(!user){
+            goRegister()
+            return
+        }
+        if(messageText.trim().length===0) return
+
+        socketRef.current?.emit("sendMessage",{messageText,roomId})
     }
     const register = async (name: string, pass: string) => {
         try {
@@ -163,7 +174,8 @@ const Prov = ({ children }: { children: any }) => {
             register, signIn, signOut,
             goHome, goRegister, goSignin,
             modalWindowActivate,setModalWindowActivate,
-            rooms,createRoom,joinRoom
+            rooms,createRoom,joinRoom,sendMessage,
+            messageText,setMessageText
         }}>
             {children}
         </MainContext.Provider>
