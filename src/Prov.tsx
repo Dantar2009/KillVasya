@@ -13,13 +13,15 @@ type playerInfo={
     name:string,
     rating:number
 }
-type Room={
-    id:string,
-    killer:playerInfo|null,
-    bodyguard:playerInfo|null,
-    killerText:string|null,
-    bodyguardText:string|null,
-    location:string
+type Room = {
+    id: string,
+    killer: playerInfo | null,
+    bodyguard: playerInfo | null,
+    killerText: string | null,
+    bodyguardText: string | null,
+    location: string,
+    winner: "killer" | "bodyguard" | "nowinner",
+    aiOtvet: string
 }
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
 
