@@ -79,6 +79,10 @@ const Prov = ({ children }: { children: any }) => {
 
         socketRef.current?.emit("sendMessage",{messageText,roomId})
     }
+    const leaveRoom=(roomId:string)=>{
+        socketRef.current?.emit("leaveRoom",roomId)
+        goHome()
+    }
     const register = async (name: string, pass: string) => {
         try {
             if (name.trim().length < 4) {
@@ -177,7 +181,7 @@ const Prov = ({ children }: { children: any }) => {
             goHome, goRegister, goSignin,
             modalWindowActivate,setModalWindowActivate,
             rooms,createRoom,joinRoom,sendMessage,
-            messageText,setMessageText
+            messageText,setMessageText,leaveRoom
         }}>
             {children}
         </MainContext.Provider>

@@ -19,9 +19,9 @@ type Room = {
 }
 
 const Game = () => {
-    const { rooms, sendMessage, messageText, setMessageText } = useContext(MainContext)
+    const { rooms, sendMessage, messageText, setMessageText,leaveRoom } = useContext(MainContext)
     const { id } = useParams()
-    const currentRoom = rooms.find((room: Room) => room.id === id)
+    const currentRoom:Room|null|undefined = rooms.find((room: Room) => room.id === id)
 
     if (!currentRoom) {
         return <div>Комната не найдена</div>
@@ -29,6 +29,7 @@ const Game = () => {
 
     return (
         <div>
+            <button onClick={()=>leaveRoom(currentRoom.id)}>Выйти</button>
             <p>📍 Локация: {currentRoom.location}</p>
             <hr />
             <p>🔫 Убийца: {currentRoom.killer?.name || "Ожидание..."} (Рейтинг: {currentRoom.killer?.rating})</p>
