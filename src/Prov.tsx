@@ -9,9 +9,9 @@ type User = {
     pass: string,
     rating: number
 }
-type playerInfo={
-    name:string,
-    rating:number
+type playerInfo = {
+    name: string,
+    rating: number
 }
 type Room = {
     id: string,
@@ -27,62 +27,72 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
 
 const Prov = ({ children }: { children: any }) => {
     const navigate = useNavigate()
-    const socketRef=useRef<Socket|null>(null)
+    const socketRef = useRef<Socket | null>(null)
     const [user, setUser] = useState<User | null>(() => {
         const data = localStorage.getItem("user")
         return data ? JSON.parse(data) : null
     })
-    const [rooms,setRooms]=useState<Room[]>([])
+    const [rooms, setRooms] = useState<Room[]>([])
     const [loginText, setLoginText] = useState<string>('')
     const [passwordText, setPasswordText] = useState<string>('')
     const [loginError, setLoginError] = useState<string>('')
     const [passwordError, setPasswordError] = useState<string>('')
-    const [modalWindowActivate,setModalWindowActivate]=useState<boolean>(false)
-    const [messageText,setMessageText]=useState<string>("")
+    const [modalWindowActivate, setModalWindowActivate] = useState<boolean>(false)
+    const [messageText, setMessageText] = useState<string>("")
+
     useEffect(() => {
         if (user) {
             localStorage.setItem("user", JSON.stringify(user))
         }
-        
+
         const socket = io(`${API_URL}`, {
             query: { name: user?.name, pass: user?.pass }
         })
         socketRef.current = socket
-        
+
         socket.on("roomsList", (rooms) => {
-            console.log(rooms)
             setRooms(rooms)
         })
-        
+
         socket.on("openRoom", (roomId) => {
-            console.log(`Join to room ${roomId}`)
             navigate(`/room/${roomId}`)
         })
-        
+
+        socket.on("userUpdated", (rating: number ) => {
+            setUser(prev => {
+                if (!prev) return prev
+                return { ...prev, rating: rating }
+            })
+        })
+
         return () => {
             socket.disconnect()
         }
-    }, [user,navigate])
-    const createRoom=(role:string)=>{
-        socketRef.current?.emit("createRoom",{role})
-        
+    }, [user, navigate])
+
+    const createRoom = (role: string) => {
+        socketRef.current?.emit("createRoom", { role })
     }
-    const joinRoom=(roomId:string)=>{
-        socketRef.current?.emit("joinRoom",roomId)
+
+    const joinRoom = (roomId: string) => {
+        socketRef.current?.emit("joinRoom", roomId)
     }
-    const sendMessage=(messageText:string, roomId:string)=>{
-        if(!user){
+
+    const sendMessage = (messageText: string, roomId: string) => {
+        if (!user) {
             goRegister()
             return
         }
-        if(messageText.trim().length===0) return
+        if (messageText.trim().length === 0) return
 
-        socketRef.current?.emit("sendMessage",{messageText,roomId})
+        socketRef.current?.emit("sendMessage", { messageText, roomId })
     }
-    const leaveRoom=(roomId:string)=>{
-        socketRef.current?.emit("leaveRoom",roomId)
+
+    const leaveRoom = (roomId: string) => {
+        socketRef.current?.emit("leaveRoom", roomId)
         goHome()
     }
+
     const register = async (name: string, pass: string) => {
         try {
             if (name.trim().length < 4) {
@@ -114,7 +124,7 @@ const Prov = ({ children }: { children: any }) => {
             console.error("Ошибка регистрации:", err)
         }
     }
-    
+
     const signIn = async (name: string, pass: string) => {
         try {
             const response = await fetch(`${API_URL}/users/signin`, {
@@ -137,7 +147,7 @@ const Prov = ({ children }: { children: any }) => {
             console.error("Ошибка входа:", err)
         }
     }
-    
+
     const signOut = () => {
         setUser(null)
         setLoginError('')
@@ -145,9 +155,9 @@ const Prov = ({ children }: { children: any }) => {
         setLoginText('')
         setPasswordText('')
         localStorage.removeItem("user")
-        goHome()  
+        goHome()
     }
-    
+
     const goHome = () => {
         setLoginError('')
         setPasswordError('')
@@ -169,7 +179,7 @@ const Prov = ({ children }: { children: any }) => {
         setPasswordText('')
         navigate("/signin")
     }
-    
+
     return (
         <MainContext.Provider value={{
             user, setUser,
@@ -179,9 +189,9 @@ const Prov = ({ children }: { children: any }) => {
             passwordError, setPasswordError,
             register, signIn, signOut,
             goHome, goRegister, goSignin,
-            modalWindowActivate,setModalWindowActivate,
-            rooms,createRoom,joinRoom,sendMessage,
-            messageText,setMessageText,leaveRoom
+            modalWindowActivate, setModalWindowActivate,
+            rooms, createRoom, joinRoom, sendMessage,
+            messageText, setMessageText, leaveRoom
         }}>
             {children}
         </MainContext.Provider>
