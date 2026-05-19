@@ -1,0 +1,22 @@
+export type User = {
+    id: number,
+    name: string,
+    pass: string,
+    rating: number
+}
+export type playerInfo = {
+    name: string,
+    rating: number
+}
+export type Room = {
+    id: string,
+    killer: playerInfo | null,
+    bodyguard: playerInfo | null,
+    killerText: string | null,
+    bodyguardText: string | null,
+    killerReady:boolean,
+    bodyguardReady:boolean,
+    location: string,
+    winner: "killer" | "bodyguard" | "nowinner",
+    aiOtvet: string
+}

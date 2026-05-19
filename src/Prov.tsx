@@ -1,91 +1,101 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import MainContext from "./MainContext"
 import { useNavigate } from "react-router-dom"
 import { io, Socket } from "socket.io-client"
+import useLocalStorage from "./hooks/useLocalStorage"
+import useIsMobile from "./hooks/isMobile"
+import useToggle from "./hooks/useToggle"
+import type { Room, User } from "./types"
 
-type User = {
-    id: number,
-    name: string,
-    pass: string,
-    rating: number
-}
-type playerInfo = {
-    name: string,
-    rating: number
-}
-type Room = {
-    id: string,
-    killer: playerInfo | null,
-    bodyguard: playerInfo | null,
-    killerText: string | null,
-    bodyguardText: string | null,
-    location: string,
-    winner: "killer" | "bodyguard" | "nowinner",
-    aiOtvet: string
-}
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
 
 const Prov = ({ children }: { children: any }) => {
     const navigate = useNavigate()
     const socketRef = useRef<Socket | null>(null)
-    const [user, setUser] = useState<User | null>(() => {
-        const data = localStorage.getItem("user")
-        return data ? JSON.parse(data) : null
-    })
+    const [user, setUser] = useLocalStorage<User>(null, "user")
     const [rooms, setRooms] = useState<Room[]>([])
     const [loginText, setLoginText] = useState<string>('')
     const [passwordText, setPasswordText] = useState<string>('')
     const [loginError, setLoginError] = useState<string>('')
     const [passwordError, setPasswordError] = useState<string>('')
-    const [modalWindowActivate, setModalWindowActivate] = useState<boolean>(false)
     const [messageText, setMessageText] = useState<string>("")
+    const [modalWindowActivate, toggleModal] = useToggle(false)
+    const isMobile = useIsMobile()
+    
+    const goHome = () => {
+        setLoginError('')
+        setPasswordError('')
+        setLoginText('')
+        setPasswordText('')
+        setMessageText('')  // ✅ сброс текста при переходе
+        navigate("/")
+    }
 
+    const goRegister = useCallback(() => {
+        setLoginError('')
+        setPasswordError('')
+        setLoginText('')
+        setPasswordText('')
+        setMessageText('')  // ✅ сброс текста при переходе
+        navigate("/register")
+    },[navigate])
+
+    const goSignin = () => {
+        setLoginError('')
+        setPasswordError('')
+        setLoginText('')
+        setPasswordText('')
+        setMessageText('')  // ✅ сброс текста при переходе
+        navigate("/signin")
+    }
     useEffect(() => {
-        if (user) {
-            localStorage.setItem("user", JSON.stringify(user))
-        }
-
         const socket = io(`${API_URL}`, {
             query: { name: user?.name, pass: user?.pass }
         })
         socketRef.current = socket
 
-        socket.on("roomsList", (rooms) => {
+        socket.on("roomsList", (rooms: Room[]) => {
             setRooms(rooms)
         })
 
-        socket.on("openRoom", (roomId) => {
+        socket.on("ratingUpdate", (newRating: number) => {
+            if (user) {
+                setUser({ ...user, rating: newRating })
+            }
+        })
+        socket.on("openRoom",(roomId:string)=>{
             navigate(`/room/${roomId}`)
         })
-
-        socket.on("userUpdated", (rating: number ) => {
-            setUser(prev => {
-                if (!prev) return prev
-                return { ...prev, rating: rating }
-            })
-        })
-
         return () => {
             socket.disconnect()
         }
-    }, [user, navigate])
+    }, [user, navigate,setUser])
 
-    const createRoom = (role: string) => {
+    const createRoom = useCallback((role: string) => {
+        if (!user) {
+            goRegister()
+            return
+        }
         socketRef.current?.emit("createRoom", { role })
-    }
+    },[user,goRegister])
 
-    const joinRoom = (roomId: string) => {
+    const joinRoom = useCallback((roomId: string) => {
+        navigate(`/room/${roomId}`)
         socketRef.current?.emit("joinRoom", roomId)
-    }
+    },[navigate])
 
-    const sendMessage = (messageText: string, roomId: string) => {
+    const sendMessage = useCallback((messageText: string, roomId: string) => {
         if (!user) {
             goRegister()
             return
         }
         if (messageText.trim().length === 0) return
-
         socketRef.current?.emit("sendMessage", { messageText, roomId })
+        setMessageText("")  
+    },[user,goRegister])
+
+    const setReady = (roomId: string) => {
+        socketRef.current?.emit("ready", roomId)
     }
 
     const leaveRoom = (roomId: string) => {
@@ -154,45 +164,29 @@ const Prov = ({ children }: { children: any }) => {
         setPasswordError('')
         setLoginText('')
         setPasswordText('')
-        localStorage.removeItem("user")
+        setMessageText('')  // ✅ сброс текста при выходе
         goHome()
     }
 
-    const goHome = () => {
-        setLoginError('')
-        setPasswordError('')
-        setLoginText('')
-        setPasswordText('')
-        navigate("/")
-    }
-    const goRegister = () => {
-        setLoginError('')
-        setPasswordError('')
-        setLoginText('')
-        setPasswordText('')
-        navigate("/register")
-    }
-    const goSignin = () => {
-        setLoginError('')
-        setPasswordError('')
-        setLoginText('')
-        setPasswordText('')
-        navigate("/signin")
-    }
-
+    const contextValue = useMemo(() => ({
+        user, setUser,
+        loginText, setLoginText,
+        passwordText, setPasswordText,
+        loginError, setLoginError,
+        passwordError, setPasswordError,
+        register, signIn, signOut,
+        goHome, goRegister, goSignin,
+        modalWindowActivate, toggleModal,
+        rooms, createRoom, joinRoom, sendMessage,
+        messageText, setMessageText, leaveRoom,
+        setReady, isMobile
+    }), [
+        user, rooms, loginText, passwordText,
+        loginError, passwordError, messageText,
+        modalWindowActivate, isMobile
+    ])
     return (
-        <MainContext.Provider value={{
-            user, setUser,
-            loginText, setLoginText,
-            passwordText, setPasswordText,
-            loginError, setLoginError,
-            passwordError, setPasswordError,
-            register, signIn, signOut,
-            goHome, goRegister, goSignin,
-            modalWindowActivate, setModalWindowActivate,
-            rooms, createRoom, joinRoom, sendMessage,
-            messageText, setMessageText, leaveRoom
-        }}>
+        <MainContext.Provider value={contextValue}>
             {children}
         </MainContext.Provider>
     )

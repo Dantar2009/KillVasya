@@ -1,69 +1,69 @@
+// Game.tsx
 import { useContext, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import MainContext from "../MainContext"
-
-type playerInfo = {
-    name: string,
-    rating: number
-}
-
-type Room = {
-    id: string,
-    killer: playerInfo | null,
-    bodyguard: playerInfo | null,
-    killerText: string | null,
-    bodyguardText: string | null,
-    location: string,
-    winner: "killer" | "bodyguard" | "nowinner",
-    aiOtvet: string
-}
+import type { Room } from "../types"
+import MainContainer from "../components/MainContainer"
+import SystemMessage from "../components/SystemMessage"
+import colors from "../colors"
+import UserMessage from "../components/UserMessage"
+import MessageInput from "../components/MessageInput"
+import StyledText from "../components/StyledText"
 
 const Game = () => {
-    const { rooms, user, setUser, sendMessage, messageText, setMessageText, leaveRoom } = useContext(MainContext)
+    const { rooms, user, setUser, leaveRoom, setReady } = useContext(MainContext)
     const { id } = useParams()
-    const currentRoom = rooms.find((room: Room) => room.id === id)
+    const room = rooms.find((r: Room) => r.id === id) ?? null
+    const role = room?.killer?.name === user?.name ? "killer" : room?.bodyguard?.name === user?.name ? "bodyguard" : null
 
-    // ✅ Обновляем рейтинг пользователя из комнаты
     useEffect(() => {
-        if (!currentRoom || !user) return
+        if (!room || !user) return
+        const newRating = role === "killer" ? room.killer?.rating : room.bodyguard?.rating
+        if (newRating !== undefined && newRating !== user.rating) setUser({ ...user, rating: newRating })
+    }, [room])
 
-        const myRating = currentRoom.killer?.name === user.name
-            ? currentRoom.killer?.rating
-            : currentRoom.bodyguard?.name === user.name
-                ? currentRoom.bodyguard?.rating
-                : null
+    if (!room) return <MainContainer><StyledText>Комната не найдена</StyledText></MainContainer>
 
-        if (myRating !== null && myRating !== user.rating) {
-            setUser({ ...user, rating: myRating })
-        }
-    }, [currentRoom])
-
-    if (!currentRoom) {
-        return <div>Комната не найдена</div>
-    }
+    const { location, killer, bodyguard, killerText, bodyguardText, winner, aiOtvet, killerReady, bodyguardReady } = room
+    const done = winner !== "nowinner"
 
     return (
-        <div>
-            <button onClick={() => leaveRoom(currentRoom.id)}>Выйти</button>
-            <p>📍 Локация: {currentRoom.location}</p>
-            <hr />
-            <p>🔫 Убийца: {currentRoom.killer?.name || "Ожидание..."} (Рейтинг: {currentRoom.killer?.rating})</p>
-            <p>💀 План убийства: {currentRoom.killerText || "Ожидание..."}</p>
-            <hr />
-            <p>🛡️ Телохранитель: {currentRoom.bodyguard?.name || "Ожидание..."} (Рейтинг: {currentRoom.bodyguard?.rating})</p>
-            <p>💪 План спасения: {currentRoom.bodyguardText || "Ожидание..."}</p>
-            <hr />
-            <p>🏆 Победитель: {currentRoom.winner === "nowinner" ? "Ещё не решено" : currentRoom.winner}</p>
-            <p>📝 Вердикт ИИ: {currentRoom.aiOtvet || "Ожидание..."}</p>
-            <hr />
-            <input
-                type="text"
-                placeholder="Твой текст..."
-                value={messageText}
-                onChange={(e) => setMessageText(e.target.value)}
-            />
-            <button onClick={() => sendMessage(messageText, currentRoom.id)}>Отправить</button>
-        </div>
+        <MainContainer>
+            <SystemMessage>
+                <StyledText>📍 {location}</StyledText>
+                <StyledText>🔫 {killer?.name || "???"} ({killer?.rating})</StyledText>
+                <StyledText>🛡️ {bodyguard?.name || "???"} ({bodyguard?.rating})</StyledText>
+            </SystemMessage>
+
+            <div style={{ flex: 1, overflowY: "auto", paddingBottom: 12 }}>
+                {killerText && <UserMessage role="killer" text={killerText} isMine={role === "killer"} />}
+                {bodyguardText && <UserMessage role="bodyguard" text={bodyguardText} isMine={role === "bodyguard"} />}
+                {done && (
+                    <>
+                        <SystemMessage>
+                            <StyledText>🏆 {winner}</StyledText>
+                            <StyledText>📝 {aiOtvet || "..."}</StyledText>
+                        </SystemMessage>
+                        <SystemMessage>
+                            <StyledText>Киллер: {killerReady ? "Готов" : "Не готов"}</StyledText>
+                            <StyledText>Телохранитель: {bodyguardReady ? "Готов" : "Не готов"}</StyledText>
+                            <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
+                                <button onClick={() => leaveRoom(id!)} style={{
+                                    flex: 1, background: "transparent", color: colors.textError, border: `1px solid ${colors.textError}`,
+                                    borderRadius: 8, padding: "10px 0", fontSize: 13, cursor: "pointer",
+                                }}>Выйти</button>
+                                <button onClick={() => setReady(id!)} style={{
+                                    flex: 1, background: colors.primary, color: colors.textOnButton, border: "none",
+                                    borderRadius: 8, padding: "10px 0", fontSize: 13, fontWeight: 500, cursor: "pointer",
+                                }}>Играть снова</button>
+                            </div>
+                        </SystemMessage>
+                    </>
+                )}
+            </div>
+
+            <MessageInput roomId={id!} />
+        </MainContainer>
     )
 }
 
