@@ -3,9 +3,10 @@ import MainContext from "./MainContext"
 import { useNavigate } from "react-router-dom"
 import { io, Socket } from "socket.io-client"
 import useLocalStorage from "./hooks/useLocalStorage"
-import useIsMobile from "./hooks/isMobile"
+import useIsMobile from "./hooks/useIsMobile"
 import useToggle from "./hooks/useToggle"
-import type { Room, User } from "./types"
+import type { RatingUser, Room, User } from "./types"
+import useListToggle from "./hooks/useListToggle"
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
 
@@ -21,31 +22,39 @@ const Prov = ({ children }: { children: any }) => {
     const [messageText, setMessageText] = useState<string>("")
     const [modalWindowActivate, toggleModal] = useToggle(false)
     const isMobile = useIsMobile()
-    
+    const [leaveWindowActivate, toggleLeaveWindow]=useToggle(false)
+    const [listState,toggleRooms,toggleCemetery,toggleRating]=useListToggle("rooms")
+    const [rating,setRating]=useState<RatingUser[]>([])
     const goHome = () => {
-        setLoginError('')
-        setPasswordError('')
-        setLoginText('')
-        setPasswordText('')
-        setMessageText('')  // ✅ сброс текста при переходе
-        navigate("/")
+    setLoginError('')
+    setPasswordError('')
+    setLoginText('')
+    setPasswordText('')
+    setMessageText('')
+    if (modalWindowActivate) toggleModal()
+    if (leaveWindowActivate) toggleLeaveWindow()
+    navigate("/")
     }
-
+    
     const goRegister = useCallback(() => {
         setLoginError('')
         setPasswordError('')
         setLoginText('')
         setPasswordText('')
-        setMessageText('')  // ✅ сброс текста при переходе
+        setMessageText('')
+        if (modalWindowActivate) toggleModal()
+        if (leaveWindowActivate) toggleLeaveWindow()
         navigate("/register")
-    },[navigate])
+    }, [leaveWindowActivate, modalWindowActivate, navigate, toggleLeaveWindow, toggleModal])
 
     const goSignin = () => {
         setLoginError('')
         setPasswordError('')
         setLoginText('')
         setPasswordText('')
-        setMessageText('')  // ✅ сброс текста при переходе
+        setMessageText('')
+        if (modalWindowActivate) toggleModal()
+        if (leaveWindowActivate) toggleLeaveWindow()
         navigate("/signin")
     }
     useEffect(() => {
@@ -65,6 +74,10 @@ const Prov = ({ children }: { children: any }) => {
         })
         socket.on("openRoom",(roomId:string)=>{
             navigate(`/room/${roomId}`)
+        })
+        socket.on("updateRatings",(rating:RatingUser[])=>{
+            console.log(rating)
+            setRating(rating)
         })
         return () => {
             socket.disconnect()
@@ -179,11 +192,13 @@ const Prov = ({ children }: { children: any }) => {
         modalWindowActivate, toggleModal,
         rooms, createRoom, joinRoom, sendMessage,
         messageText, setMessageText, leaveRoom,
-        setReady, isMobile
+        setReady, isMobile,leaveWindowActivate, toggleLeaveWindow,
+        listState,toggleRooms,toggleCemetery,toggleRating,rating
     }), [
         user, rooms, loginText, passwordText,
         loginError, passwordError, messageText,
-        modalWindowActivate, isMobile
+        modalWindowActivate, isMobile,leaveWindowActivate,
+        listState,rating
     ])
     return (
         <MainContext.Provider value={contextValue}>

@@ -1,4 +1,5 @@
 // Input.tsx
+import { useEffect, useRef } from "react"
 import colors from "../colors"
 
 const Input = ({ type, placeholder, value, onChange }: {
@@ -6,12 +7,19 @@ const Input = ({ type, placeholder, value, onChange }: {
     placeholder: string,
     value: string,
     onChange: (value:string) => void
-}) => {
+    }) => {
+    const inputRef=useRef<HTMLInputElement>(null)
+    useEffect(()=>{
+        if(type==="text"){
+            inputRef.current?.focus()
+        }
+    },[])
     return (
         <input
             type={type}
             placeholder={placeholder}
             value={value}
+            ref={inputRef}
             onChange={(e)=>onChange(e.target.value)}
             style={{
                 width: "100%",

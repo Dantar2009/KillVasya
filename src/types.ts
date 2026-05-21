@@ -20,3 +20,8 @@ export type Room = {
     winner: "killer" | "bodyguard" | "nowinner",
     aiOtvet: string
 }
+export type RatingUser={
+    id:string,
+    name:string,
+    rating:number
+}

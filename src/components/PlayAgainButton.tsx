@@ -1,32 +1,27 @@
-import { useState, useContext, memo } from "react"
-import MainContext from "../MainContext"
+// PlayAgainButton.tsx
+import { useState } from "react"
 import colors from "../colors"
 
-const CreateRoomButton = memo(() => {
-    const { toggleModal,user,goRegister,isMobile } = useContext(MainContext)  
+const PlayAgainButton = ({ onClick }: { onClick: () => void }) => {
     const [isHovered, setIsHovered] = useState(false)
     const [isPressed, setIsPressed] = useState(false)
 
     return (
         <button
             onClick={() => {
-                if(!user){
-                    goRegister()
-                    return
-                }
                 setIsPressed(true)
-                toggleModal()  
-                setTimeout(() => setIsPressed(false), 150)
+                onClick()
+                setTimeout(() => setIsPressed(false), 200)
             }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             style={{
-                width: isMobile?85:130,
-                height: 36,
+                flex: 1,
                 background: isHovered ? colors.primaryHover : colors.primary,
                 color: colors.textOnButton,
                 border: "none",
-                borderRadius: 10,
+                borderRadius: 8,
+                padding: "10px 0",
                 fontSize: 13,
                 fontWeight: 500,
                 cursor: "pointer",
@@ -34,9 +29,9 @@ const CreateRoomButton = memo(() => {
                 transition: "all 0.12s ease",
             }}
         >
-            + Создать
+            Играть снова
         </button>
     )
-})
+}
 
-export default CreateRoomButton
+export default PlayAgainButton

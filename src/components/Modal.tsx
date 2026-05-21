@@ -4,7 +4,7 @@ import colors from "../colors"
 import ModalButton from "./ModalButton"
 
 const Modal = memo(() => {
-    const { toggleModal, createRoom } = useContext(MainContext)
+    const { toggleModal, createRoom ,isMobile } = useContext(MainContext)
 
     const handleCreate = (role: string) => {
         createRoom(role)
@@ -30,7 +30,7 @@ const Modal = memo(() => {
                 display: "flex",
                 flexDirection: "column",
                 gap: 14,
-                minWidth: 280,
+                width:isMobile?"85%":"20%"
             }} onClick={(e) => e.stopPropagation()}>
                 <span style={{
                     color: colors.textPrimary,

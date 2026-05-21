@@ -1,17 +1,20 @@
 // Game.tsx
-import { useContext, useEffect } from "react"
+import { useContext, useEffect} from "react"
 import { useParams } from "react-router-dom"
 import MainContext from "../MainContext"
 import type { Room } from "../types"
 import MainContainer from "../components/MainContainer"
 import SystemMessage from "../components/SystemMessage"
-import colors from "../colors"
 import UserMessage from "../components/UserMessage"
 import MessageInput from "../components/MessageInput"
 import StyledText from "../components/StyledText"
+import LeaveModal from "../components/LeaveModal"
+import LeaveGameButton from "../components/LeaveGameButton"
+
+import PlayAgainButton from "../components/PlayAgainButton"
 
 const Game = () => {
-    const { rooms, user, setUser, leaveRoom, setReady } = useContext(MainContext)
+    const { rooms, user, setUser, leaveRoom, setReady, leaveWindowActivate, toggleLeaveWindow,rating } = useContext(MainContext)
     const { id } = useParams()
     const room = rooms.find((r: Room) => r.id === id) ?? null
     const role = room?.killer?.name === user?.name ? "killer" : room?.bodyguard?.name === user?.name ? "bodyguard" : null
@@ -29,13 +32,24 @@ const Game = () => {
 
     return (
         <MainContainer>
-            <SystemMessage>
-                <StyledText>📍 {location}</StyledText>
-                <StyledText>🔫 {killer?.name || "???"} ({killer?.rating})</StyledText>
-                <StyledText>🛡️ {bodyguard?.name || "???"} ({bodyguard?.rating})</StyledText>
-            </SystemMessage>
+            {leaveWindowActivate && (
+                <LeaveModal onConfirm={() => leaveRoom(id!)} onCancel={() => toggleLeaveWindow()} />
+            )}
 
             <div style={{ flex: 1, overflowY: "auto", paddingBottom: 12 }}>
+                <SystemMessage>
+                    <StyledText>📍 {location}</StyledText>
+                    <StyledText>🔫 {killer?.name || "???"} ({killer?.rating})</StyledText>
+                    <StyledText>🛡️ {bodyguard?.name || "???"} ({bodyguard?.rating})</StyledText>
+                    <div style={{height:10}}/>
+                    <LeaveGameButton onClick={() => {
+                        if (room.winner === "nowinner" && room.location !== null&&killer&&bodyguard) {
+                            toggleLeaveWindow()
+                        } else {
+                            leaveRoom(id!)
+                        }
+                    }} />
+                </SystemMessage>
                 {killerText && <UserMessage role="killer" text={killerText} isMine={role === "killer"} />}
                 {bodyguardText && <UserMessage role="bodyguard" text={bodyguardText} isMine={role === "bodyguard"} />}
                 {done && (
@@ -48,14 +62,8 @@ const Game = () => {
                             <StyledText>Киллер: {killerReady ? "Готов" : "Не готов"}</StyledText>
                             <StyledText>Телохранитель: {bodyguardReady ? "Готов" : "Не готов"}</StyledText>
                             <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
-                                <button onClick={() => leaveRoom(id!)} style={{
-                                    flex: 1, background: "transparent", color: colors.textError, border: `1px solid ${colors.textError}`,
-                                    borderRadius: 8, padding: "10px 0", fontSize: 13, cursor: "pointer",
-                                }}>Выйти</button>
-                                <button onClick={() => setReady(id!)} style={{
-                                    flex: 1, background: colors.primary, color: colors.textOnButton, border: "none",
-                                    borderRadius: 8, padding: "10px 0", fontSize: 13, fontWeight: 500, cursor: "pointer",
-                                }}>Играть снова</button>
+                                <LeaveGameButton onClick={() => leaveRoom(id!)} />
+                                <PlayAgainButton onClick={()=>setReady(id!)}/>
                             </div>
                         </SystemMessage>
                     </>
