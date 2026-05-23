@@ -4,7 +4,7 @@ import MainContext from "../MainContext"
 import RegisterButton from "./RegisterButton"
 import LoginButton from "./LoginButton"
 import SignoutButton from "./SignoutButton"
-import colors from "../colors"
+import colors from "../data/colors"
 
 const Header = memo(() => {
     const { user, signOut, goRegister, goSignin } = useContext(MainContext)

@@ -2,7 +2,7 @@
 import { SendHorizonal } from "lucide-react"
 import { memo, useContext } from "react"
 import MainContext from "../MainContext"
-import colors from "../colors"
+import colors from "../data/colors"
 
 const MessageInput = memo(({roomId}:{roomId:string}) => {
     const { messageText, setMessageText, sendMessage } = useContext(MainContext)

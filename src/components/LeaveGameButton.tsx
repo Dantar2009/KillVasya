@@ -1,8 +1,8 @@
 // LeaveGameButton.tsx
-import { useState } from "react"
-import colors from "../colors"
+import { memo, useState } from "react"
+import colors from "../data/colors"
 
-const LeaveGameButton = ({ onClick }: { onClick: () => void }) => {
+const LeaveGameButton = memo(({ onClick }: { onClick: () => void }) => {
     const [isHovered, setIsHovered] = useState(false)
     const [isPressed, setIsPressed] = useState(false)
 
@@ -32,6 +32,6 @@ const LeaveGameButton = ({ onClick }: { onClick: () => void }) => {
             Выйти
         </button>
     )
-}
+})
 
 export default LeaveGameButton

@@ -1,7 +1,8 @@
 // ToggleButton.tsx
-import colors from "../colors"
+import { memo } from "react"
+import colors from "../data/colors"
 
-const ToggleButton = ({ active, emoji, onClick }: {
+const ToggleButton = memo(({ active, emoji, onClick }: {
     active: boolean,
     emoji: string,
     onClick: () => void
@@ -23,6 +24,6 @@ const ToggleButton = ({ active, emoji, onClick }: {
             {emoji}
         </button>
     )
-}
+})
 
 export default ToggleButton

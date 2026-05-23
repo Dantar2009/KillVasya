@@ -1,7 +1,8 @@
 // SystemMessage.tsx
-import colors from "../colors"
+import { memo } from "react"
+import colors from "../data/colors"
 
-const SystemMessage = ({ children }: { children: any }) => {
+const SystemMessage = memo(({ children }: { children: any }) => {
     return (
         <div style={{
             width: "100%",
@@ -24,6 +25,6 @@ const SystemMessage = ({ children }: { children: any }) => {
             </div>
         </div>
     )
-}
+})
 
 export default SystemMessage

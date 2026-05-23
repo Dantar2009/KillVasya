@@ -1,8 +1,8 @@
 // Input.tsx
-import { useEffect, useRef } from "react"
-import colors from "../colors"
+import { memo, useEffect, useRef } from "react"
+import colors from "../data/colors"
 
-const Input = ({ type, placeholder, value, onChange }: {
+const Input = memo(({ type, placeholder, value, onChange }: {
     type: "text" | "password",
     placeholder: string,
     value: string,
@@ -34,6 +34,6 @@ const Input = ({ type, placeholder, value, onChange }: {
             }}
         />
     )
-}
+})
 
 export default Input

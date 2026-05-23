@@ -1,5 +1,5 @@
 import { memo } from "react"
-import colors from "../colors"
+import colors from "../data/colors"
 
 const ModalButton = memo(({ type, onClick, children }: {
     type: "killer" | "bodyguard" | "cancel",

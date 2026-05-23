@@ -2,13 +2,14 @@ import { memo, useContext } from "react"
 import MainContext from "../MainContext"
 import RoomItem from "./RoomItem"
 import RatingItem from "./RatingItem"
-import type { Room, RatingUser } from "../types"
-import colors from "../colors"
+import type { Room, RatingUser, Grave } from "../types"
+import colors from "../data/colors"
 import CreateRoomButton from "./CreateRoomButton"
 import ToggleButton from "./ToggleListButton"
+import GraveItem from "./GraveItem"
 
 const RoomsList = memo(() => {
-    const { rooms, listState, toggleRooms, toggleCemetery, toggleRating, rating } = useContext(MainContext)
+    const { rooms, listState, toggleRooms, toggleCemetery, toggleRating, rating,cemetery } = useContext(MainContext)
 
     const totalRooms = rooms.length
     const waitingRooms = rooms.filter((room: Room) => !room.killer || !room.bodyguard).length
@@ -85,9 +86,15 @@ const RoomsList = memo(() => {
 
                 {/* Кладбище */}
                 {listState === "cemetery" && (
-                    <div style={{ color: colors.textMuted, textAlign: "center", padding: "30px 0", fontSize: 14 }}>
-                        Скоро здесь появятся павшие Васы 💀
-                    </div>
+                    cemetery?.length === 0 ? (
+                        <div style={{ color: colors.textMuted, textAlign: "center", padding: "30px 0", fontSize: 14 }}>
+                            Пока могил нет. Убейте Васю!
+                        </div>
+                    ) : (
+                        cemetery?.map((grave: Grave) => (
+                            <GraveItem key={grave.id} {...grave} />
+                        ))
+                    )
                 )}
 
                 {/* Рейтинг */}
@@ -102,6 +109,7 @@ const RoomsList = memo(() => {
                         ))
                     )
                 )}
+                
             </div>
         </div>
     )

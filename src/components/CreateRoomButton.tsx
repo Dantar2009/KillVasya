@@ -1,6 +1,6 @@
 import { useState, useContext, memo } from "react"
 import MainContext from "../MainContext"
-import colors from "../colors"
+import colors from "../data/colors"
 
 const CreateRoomButton = memo(() => {
     const { toggleModal,user,goRegister,isMobile } = useContext(MainContext)  

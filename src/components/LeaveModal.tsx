@@ -1,9 +1,9 @@
 // LeaveModal.tsx
-import { useContext, useState } from "react"
-import colors from "../colors"
+import { memo, useContext, useState } from "react"
+import colors from "../data/colors"
 import MainContext from "../MainContext"
 
-const LeaveModal = ({ onConfirm, onCancel }: {
+const LeaveModal = memo(({ onConfirm, onCancel }: {
     onConfirm: () => void,
     onCancel: () => void
 }) => {
@@ -91,6 +91,6 @@ const LeaveModal = ({ onConfirm, onCancel }: {
             </div>
         </div>
     )
-}
+})
 
 export default LeaveModal

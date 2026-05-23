@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from "react"
-import colors from "../colors"
+import colors from "../data/colors"
 
 const Title = memo(({ text }: { text: string }) => {
     const [isLoad, setIsLoad] = useState(false)

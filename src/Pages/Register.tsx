@@ -2,7 +2,7 @@ import { useContext } from "react"
 import MainContext from "../MainContext"
 import Input from "../components/Input"
 import RegOrSigninForm from "../components/RegOrSigninForm"
-import colors from "../colors"
+import colors from "../data/colors"
 
 const Register = () => {
     const {

@@ -1,5 +1,5 @@
 import { memo } from "react"
-import colors from "../colors"
+import colors from "../data/colors"
 import type { RatingUser } from "../types"
 
 const RatingItem = memo(({ name, rating, place }: RatingUser & { place: number }) => {

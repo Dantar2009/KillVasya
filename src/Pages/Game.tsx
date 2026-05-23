@@ -14,7 +14,7 @@ import LeaveGameButton from "../components/LeaveGameButton"
 import PlayAgainButton from "../components/PlayAgainButton"
 
 const Game = () => {
-    const { rooms, user, setUser, leaveRoom, setReady, leaveWindowActivate, toggleLeaveWindow,rating } = useContext(MainContext)
+    const { rooms, user, setUser, leaveRoom, setReady, leaveWindowActivate, toggleLeaveWindow } = useContext(MainContext)
     const { id } = useParams()
     const room = rooms.find((r: Room) => r.id === id) ?? null
     const role = room?.killer?.name === user?.name ? "killer" : room?.bodyguard?.name === user?.name ? "bodyguard" : null
@@ -38,9 +38,9 @@ const Game = () => {
 
             <div style={{ flex: 1, overflowY: "auto", paddingBottom: 12 }}>
                 <SystemMessage>
-                    <StyledText>📍 {location}</StyledText>
-                    <StyledText>🔫 {killer?.name || "???"} ({killer?.rating})</StyledText>
-                    <StyledText>🛡️ {bodyguard?.name || "???"} ({bodyguard?.rating})</StyledText>
+                    <StyledText>Локация: {location||"..."}</StyledText>
+                    <StyledText>🔪 {killer?.name || "Ожидание..."} {killer?.rating ? `Рейтинг: ${killer.rating}` : ""}</StyledText>
+                    <StyledText>🛡️ {bodyguard?.name || "Ожидание..."} {bodyguard?.rating ? `Рейтинг: ${bodyguard.rating}` : ""}</StyledText>
                     <div style={{height:10}}/>
                     <LeaveGameButton onClick={() => {
                         if (room.winner === "nowinner" && room.location !== null&&killer&&bodyguard) {

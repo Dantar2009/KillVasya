@@ -1,8 +1,8 @@
 // PlayAgainButton.tsx
-import { useState } from "react"
-import colors from "../colors"
+import { memo, useState } from "react"
+import colors from "../data/colors"
 
-const PlayAgainButton = ({ onClick }: { onClick: () => void }) => {
+const PlayAgainButton = memo(({ onClick }: { onClick: () => void }) => {
     const [isHovered, setIsHovered] = useState(false)
     const [isPressed, setIsPressed] = useState(false)
 
@@ -32,6 +32,6 @@ const PlayAgainButton = ({ onClick }: { onClick: () => void }) => {
             Играть снова
         </button>
     )
-}
+})
 
 export default PlayAgainButton

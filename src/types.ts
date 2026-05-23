@@ -25,3 +25,8 @@ export type RatingUser={
     name:string,
     rating:number
 }
+export type Grave={
+    id:string,
+    date:string,
+    epitaph:string
+}

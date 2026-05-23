@@ -1,8 +1,8 @@
-import { useContext } from "react"
+import { useContext, } from "react"
 import MainContext from "../MainContext"
 import Input from "../components/Input"
 import RegOrSigninForm from "../components/RegOrSigninForm"
-import colors from "../colors"
+import colors from "../data/colors"
 
 const Signin = () => {
     const {
@@ -11,10 +11,10 @@ const Signin = () => {
         loginError, passwordError,
         signIn, goHome, goRegister
     } = useContext(MainContext)
-
+    
     return (
         <RegOrSigninForm title="Вход">
-            <Input type="text" placeholder="Логин" value={loginText} onChange={(value) => setLoginText(value)} />
+            <Input type="text" placeholder="Логин"  value={loginText} onChange={(value) => setLoginText(value)} />
             {loginError && <p style={{ color: colors.textError, fontSize: 13, margin: "-8px 0" }}>{loginError}</p>}
 
             <Input type="password" placeholder="Пароль" value={passwordText} onChange={(value) => setPasswordText(value)} />

@@ -1,6 +1,6 @@
 // RegisterButton.tsx
 import { memo, useState } from "react"
-import colors from "../colors"
+import colors from "../data/colors"
 
 const RegisterButton = memo(({ onClick }: { onClick: () => void }) => {
     const [isHovered, setIsHovered] = useState(false)

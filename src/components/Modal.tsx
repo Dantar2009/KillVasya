@@ -1,6 +1,6 @@
 import { memo, useContext } from "react"
 import MainContext from "../MainContext"
-import colors from "../colors"
+import colors from "../data/colors"
 import ModalButton from "./ModalButton"
 
 const Modal = memo(() => {

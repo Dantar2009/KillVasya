@@ -1,5 +1,5 @@
 import type { Room } from "../types"
-import colors from "../colors"
+import colors from "../data/colors"
 import { memo, useContext } from "react"
 import MainContext from "../MainContext"
 
@@ -33,7 +33,7 @@ const RoomItem = memo(({ id, killer, bodyguard }: Room) => {
                     alignItems: "center",
                     gap: 8,
                 }}>
-                    <span style={{ fontSize: 16, flexShrink: 0 }}>🔫</span>
+                    <span style={{ fontSize: 16, flexShrink: 0 }}>🔪</span>
                     <span style={{
                         color: colors.textPrimary,
                         fontSize: 15,

@@ -5,7 +5,7 @@ import { io, Socket } from "socket.io-client"
 import useLocalStorage from "./hooks/useLocalStorage"
 import useIsMobile from "./hooks/useIsMobile"
 import useToggle from "./hooks/useToggle"
-import type { RatingUser, Room, User } from "./types"
+import type { Grave, RatingUser, Room, User } from "./types"
 import useListToggle from "./hooks/useListToggle"
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
@@ -25,6 +25,7 @@ const Prov = ({ children }: { children: any }) => {
     const [leaveWindowActivate, toggleLeaveWindow]=useToggle(false)
     const [listState,toggleRooms,toggleCemetery,toggleRating]=useListToggle("rooms")
     const [rating,setRating]=useState<RatingUser[]>([])
+    const [cemetery,setCemetery]=useState<Grave[]>([])
     const goHome = () => {
     setLoginError('')
     setPasswordError('')
@@ -75,14 +76,27 @@ const Prov = ({ children }: { children: any }) => {
         socket.on("openRoom",(roomId:string)=>{
             navigate(`/room/${roomId}`)
         })
+        socket.on("cemeteryUpdate",(cemetery:Grave[])=>{
+            setCemetery(cemetery)
+        })
         socket.on("updateRatings",(rating:RatingUser[])=>{
             console.log(rating)
             setRating(rating)
         })
+        socket.on("createRoom",(newRoom:Room)=>{
+            console.log("New Room: ", newRoom)
+            setRooms(prev=>[...prev, newRoom])
+        })
+        socket.on("updateRoom",(updatedRoom:Room)=>{
+            setRooms(prev=>prev.map((room:Room)=>room.id===updatedRoom.id?updatedRoom:room))
+        })
+        socket.on("deleteRoom",(roomId:string)=>{
+            setRooms(prev=>prev.filter((room:Room)=>room.id!==roomId))
+        })
         return () => {
             socket.disconnect()
         }
-    }, [user, navigate,setUser])
+    }, [user, navigate, setUser])
 
     const createRoom = useCallback((role: string) => {
         if (!user) {
@@ -193,12 +207,13 @@ const Prov = ({ children }: { children: any }) => {
         rooms, createRoom, joinRoom, sendMessage,
         messageText, setMessageText, leaveRoom,
         setReady, isMobile,leaveWindowActivate, toggleLeaveWindow,
-        listState,toggleRooms,toggleCemetery,toggleRating,rating
+        listState,toggleRooms,toggleCemetery,toggleRating,rating,
+        cemetery,setCemetery
     }), [
         user, rooms, loginText, passwordText,
         loginError, passwordError, messageText,
         modalWindowActivate, isMobile,leaveWindowActivate,
-        listState,rating
+        listState,rating,cemetery
     ])
     return (
         <MainContext.Provider value={contextValue}>

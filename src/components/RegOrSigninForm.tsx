@@ -1,7 +1,8 @@
 // FormCard.tsx
-import colors from "../colors"
+import { memo } from "react"
+import colors from "../data/colors"
 
-const RegOrSigninForm= ({ title, children }: {
+const RegOrSigninForm= memo(({ title, children }: {
     title: string,
     children: React.ReactNode
 }) => {
@@ -36,6 +37,6 @@ const RegOrSigninForm= ({ title, children }: {
             </div>
         </div>
     )
-}
+})
 
 export default RegOrSigninForm

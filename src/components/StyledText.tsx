@@ -1,7 +1,8 @@
 // StyledText.tsx
-import colors from "../colors"
+import { memo } from "react"
+import colors from "../data/colors"
 
-const StyledText = ({ children }: { children: React.ReactNode }) => {
+const StyledText = memo(({ children }: { children: React.ReactNode }) => {
     return (
         <p style={{
             color: colors.textOnButton,
@@ -14,6 +15,6 @@ const StyledText = ({ children }: { children: React.ReactNode }) => {
             {children}
         </p>
     )
-}
+})
 
 export default StyledText

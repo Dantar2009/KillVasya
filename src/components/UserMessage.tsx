@@ -1,5 +1,5 @@
 import { memo } from "react"
-import colors from "../colors"
+import colors from "../data/colors"
 
 const UserMessage = memo(({ role, text, isMine }: {
     role: "killer" | "bodyguard",
@@ -29,7 +29,7 @@ const UserMessage = memo(({ role, text, isMine }: {
                     fontSize: 12,
                     opacity: 0.8,
                 }}>
-                    {role === "killer" ? "🔫 Убийца" : "🛡️ Телохранитель"}
+                    {role === "killer" ? "🔪 Убийца" : "🛡️ Телохранитель"}
                 </p>
                 <p style={{ margin: 0, fontSize: 15 }}>{text}</p>
             </div>
