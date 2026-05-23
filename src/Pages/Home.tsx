@@ -3,7 +3,6 @@ import MainContext from "../MainContext"
 import Modal from "../components/Modal"
 import RoomsList from "../components/RoomsList"
 import Header from "../components/Header"
-import Title from "../components/Title"
 import MainContainer from "../components/MainContainer"
 import DeathText from "../components/DeathText"
 
