@@ -80,11 +80,9 @@ const Prov = ({ children }: { children: any }) => {
             setCemetery(cemetery)
         })
         socket.on("updateRatings",(rating:RatingUser[])=>{
-            console.log(rating)
             setRating(rating)
         })
         socket.on("createRoom",(newRoom:Room)=>{
-            console.log("New Room: ", newRoom)
             setRooms(prev=>[...prev, newRoom])
         })
         socket.on("updateRoom",(updatedRoom:Room)=>{

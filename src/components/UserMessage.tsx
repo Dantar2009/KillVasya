@@ -26,10 +26,10 @@ const UserMessage = memo(({ role, text, isMine }: {
             }}>
                 <p style={{
                     margin: "0 0 4px 0",
-                    fontSize: 12,
+                    fontSize: 17,
                     opacity: 0.8,
                 }}>
-                    {role === "killer" ? "🔪 Убийца" : "🛡️ Телохранитель"}
+                    {role === "killer" ? "🔪 Киллер" : "🛡️ Телохранитель"}
                 </p>
                 <p style={{ margin: 0, fontSize: 15 }}>{text}</p>
             </div>

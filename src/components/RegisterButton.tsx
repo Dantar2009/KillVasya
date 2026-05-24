@@ -1,10 +1,11 @@
 // RegisterButton.tsx
-import { memo, useState } from "react"
+import { memo, useContext, useState } from "react"
 import colors from "../data/colors"
+import MainContext from "../MainContext"
 
 const RegisterButton = memo(({ onClick }: { onClick: () => void }) => {
     const [isHovered, setIsHovered] = useState(false)
-
+    const {isMobile}=useContext(MainContext)
     return (
         <button
             onClick={onClick}
@@ -16,7 +17,7 @@ const RegisterButton = memo(({ onClick }: { onClick: () => void }) => {
                 border: "none",
                 borderRadius: 6,
                 padding: "7px 16px",
-                fontSize: 13,
+                fontSize:isMobile?16: 13,
                 fontWeight: 500,
                 cursor: "pointer",
                 transition: "all 0.12s ease",

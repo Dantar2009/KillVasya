@@ -7,7 +7,7 @@ import SignoutButton from "./SignoutButton"
 import colors from "../data/colors"
 
 const Header = memo(() => {
-    const { user, signOut, goRegister, goSignin } = useContext(MainContext)
+    const { user, signOut, goRegister, goSignin,isMobile } = useContext(MainContext)
 
     return (
         <div style={{
@@ -22,7 +22,7 @@ const Header = memo(() => {
             {user ? (
                 <>
                     <SignoutButton onClick={signOut} />
-                    <span style={{ color: colors.textPrimary, fontSize: 14 }}>
+                    <span style={{ color: colors.textPrimary, fontSize:isMobile?17: 14 }}>
                         {user.name}
                         <span style={{ color: colors.textMuted, marginLeft: 6 }}>
                             ({user.rating})

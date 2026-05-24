@@ -6,7 +6,7 @@ const StyledText = memo(({ children }: { children: React.ReactNode }) => {
     return (
         <p style={{
             color: colors.textOnButton,
-            fontSize: 15,
+            fontSize: 17,
             lineHeight: 1.6,
             margin: 0,
             whiteSpace: "pre-wrap",

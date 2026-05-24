@@ -32,6 +32,7 @@ const RatingItem = memo(({ name, rating, place }: RatingUser & { place: number }
                     fontSize: 20,
                     flexShrink: 0,
                     fontWeight: place <= 3 ? 600 : 400,
+                    color: colors.textPrimary
                 }}>
                     {getMedal(place)}
                 </span>
