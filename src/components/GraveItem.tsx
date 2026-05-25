@@ -39,7 +39,7 @@ const GraveItem = memo(({ date, epitaph }: Grave) => {
                     fontStyle: "italic",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
+                    wordBreak: "break-word",
                 }}>
                     {epitaph}
                 </span>

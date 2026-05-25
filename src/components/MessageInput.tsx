@@ -1,12 +1,12 @@
 // ChatInput.tsx
 import { SendHorizonal } from "lucide-react"
-import { memo, useContext } from "react"
+import { memo, useContext, useRef } from "react"
 import MainContext from "../MainContext"
 import colors from "../data/colors"
 
 const MessageInput = memo(({roomId}:{roomId:string}) => {
     const { messageText, setMessageText, sendMessage } = useContext(MainContext)
-
+    const textareaRef=useRef<HTMLTextAreaElement>(null)
     return (
         <div style={{
             display: "flex",
@@ -29,6 +29,7 @@ const MessageInput = memo(({roomId}:{roomId:string}) => {
                 }}
                 placeholder="Введите сообщение..."
                 rows={1}
+                ref={textareaRef}
                 style={{
                     flex: 1,
                     resize: "none",
@@ -50,7 +51,12 @@ const MessageInput = memo(({roomId}:{roomId:string}) => {
                 }}
             />
             <button
-                onClick={() => sendMessage(messageText,roomId)}
+                onClick={() =>{
+                    sendMessage(messageText,roomId)
+                    if(textareaRef.current){
+                        textareaRef.current.style.height="45px"
+                    }
+                }} 
                 style={{
                     width: 45,
                     height: 45,

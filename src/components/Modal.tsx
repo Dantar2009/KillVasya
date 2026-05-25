@@ -42,7 +42,8 @@ const Modal = memo(() => {
                     За кого будете играть?
                 </span>
 
-                <ModalButton type="killer" onClick={() => handleCreate("killer")}>
+                <ModalButton type="killer" onClick={() =>{ handleCreate("killer")
+                     console.log("fhjksdhfjkd")}}>
                     🔪 Киллер
                 </ModalButton>
 
