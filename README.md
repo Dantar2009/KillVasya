@@ -1,75 +1,78 @@
-# React + TypeScript + Vite
+# 💀 Убей Васю — Фронтенд
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Фронтенд для онлайн-игры "Убей Васю". React + TypeScript + Vite.
 
-Currently, two official plugins are available:
+**🌐 Играть:** [kill-vasya.vercel.app](https://kill-vasya.vercel.app)
+**🖥️ Бэкенд:** [github.com/Dantar2009/KillVasyaAPI](https://github.com/Dantar2009/KillVasyaAPI)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🎮 Как играть
 
-## React Compiler
+1. **Зарегистрируйся** или **войди** в аккаунт
+2. Нажми **"+ Создать"** и выбери роль:
+   - 🔪 **Убийца** — придумываешь, как Вася умрёт
+   - 🛡️ **Телохранитель** — придумываешь, как Вася спасётся
+3. Отправь **ссылку на комнату** другу (он должен войти за вторую роль)
+4. Когда оба игрока в комнате — появляется **локация** (случайная)
+5. Убийца пишет текст **первым**. Телохранитель — **вторым**
+6. Нейросеть-судья (OpenRouter) выносит **вердикт**: кто убедительнее
+7. Рейтинг обновляется. Если убийца победил — Вася попадает на 🪦 **Кладбище** с эпитафией
+8. Можно нажать **"Играть снова"** — новая локация, новый раунд
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## ✨ Фичи
 
-Note: This will impact Vite dev & build performances.
+- 🔪 **Комнаты с ролями** — Убийца vs Телохранитель
+- 🤖 **AI-судья** (OpenRouter) — выносит вердикт и пишет эпитафию
+- ⏱️ **Таймеры** на каждый ход (убийца должен успеть, телохранитель должен успеть)
+- 🏆 **Рейтинг** игроков в реальном времени (WebSocket)
+- 🪦 **Кладбище Вась** — все убитые Васи с датой и эпитафией
+- 👁️ **Режим зрителя** — можно зайти в комнату и смотреть игру
+- 📱 **Адаптивный дизайн** — работает на телефоне и десктопе
+- 🎨 **Тёмная тема** — кастомная палитра цветов
+- 🔄 **Переигрывание** — кнопка "Играть снова" для нового раунда
+- 🚪 **Модалка выхода** — предупреждение при выходе во время раунда
 
-## Expanding the ESLint configuration
+## 🚀 Запуск
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+\`\`\`bash
+npm install
+npm run dev
+\`\`\`
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🔧 Переменные окружения
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+\`\`\`
+VITE_API_URL=http://localhost:3000
+\`\`\`
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📁 Структура
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+\`\`\`
+client/
+├── components/       # React-компоненты (25+)
+│   ├── Header.tsx
+│   ├── RoomItem.tsx
+│   ├── RatingItem.tsx
+│   ├── GraveItem.tsx
+│   ├── Modal.tsx
+│   └── ...
+├── hooks/            # Кастомные хуки
+│   ├── useLocalStorage.ts
+│   ├── useToggle.ts
+│   ├── useIsMobile.ts
+│   ├── useListToggle.ts
+│   └── useRandomDeath.ts
+├── Pages/            # Страницы
+│   ├── Home.tsx
+│   ├── Game.tsx
+│   ├── Register.tsx
+│   └── Signin.tsx
+├── data/             # Конфигурация
+│   ├── colors.ts     # Палитра цветов
+│   └── deaths.ts     # 100+ фраз о смерти Васи
+├── types.ts          # Типы TypeScript
+└── MainContext.ts    # React Context
+\`\`\`
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🛠️ Стек
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+React, TypeScript, Vite, React Router, Socket.IO Client, Lucide React
