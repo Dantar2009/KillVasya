@@ -9,7 +9,7 @@ import ToggleButton from "./ToggleListButton"
 import GraveItem from "./GraveItem"
 
 const RoomsList = memo(() => {
-    const { rooms, listState, toggleRooms, toggleCemetery, toggleRating, rating,cemetery } = useContext(MainContext)
+    const { rooms, listState, toggleRooms, toggleCemetery, toggleRating, rating, cemetery } = useContext(MainContext)
 
     const totalRooms = rooms.length
     const waitingRooms = rooms.filter((room: Room) => !room.killer || !room.bodyguard).length
@@ -21,16 +21,19 @@ const RoomsList = memo(() => {
             borderRadius: 12,
             display: "flex",
             flexDirection: "column",
-            gap: 12,
             border: `1px solid ${colors.inputBorder}`,
             boxShadow: `0 4px 16px rgba(0, 0, 0, 0.25)`,
+            marginBottom: 20,
+            maxHeight: "80vh",        // ✅ не вылезает
+            overflowY: "auto",        // ✅ скролл внутри если надо
         }}>
+        
             <div style={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 paddingBottom: 14,
-                borderBottom: `1px solid ${colors.inputBorder}`,
+                flexShrink: 0,
             }}>
                 <div style={{
                     display: "flex",
@@ -56,7 +59,7 @@ const RoomsList = memo(() => {
                 display: "flex",
                 flexDirection: "column",
                 gap: 12,
-                maxHeight: 700,
+                flex: 1,
                 overflowY: "auto",
             }}>
                 {/* Комнаты */}
@@ -109,7 +112,6 @@ const RoomsList = memo(() => {
                         ))
                     )
                 )}
-                
             </div>
         </div>
     )

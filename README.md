@@ -44,35 +44,9 @@ npm run dev
 VITE_API_URL=http://localhost:3000
 \`\`\`
 
-## 📁 Структура
 
-\`\`\`
-client/
-├── components/       # React-компоненты (25+)
-│   ├── Header.tsx
-│   ├── RoomItem.tsx
-│   ├── RatingItem.tsx
-│   ├── GraveItem.tsx
-│   ├── Modal.tsx
-│   └── ...
-├── hooks/            # Кастомные хуки
-│   ├── useLocalStorage.ts
-│   ├── useToggle.ts
-│   ├── useIsMobile.ts
-│   ├── useListToggle.ts
-│   └── useRandomDeath.ts
-├── Pages/            # Страницы
-│   ├── Home.tsx
-│   ├── Game.tsx
-│   ├── Register.tsx
-│   └── Signin.tsx
-├── data/             # Конфигурация
-│   ├── colors.ts     # Палитра цветов
-│   └── deaths.ts     # 100+ фраз о смерти Васи
-├── types.ts          # Типы TypeScript
-└── MainContext.ts    # React Context
 \`\`\`
 
 ## 🛠️ Стек
 
-React, TypeScript, Vite, React Router, Socket.IO Client, Lucide React
+React, TypeScript, Vite, React Router, Socket.IO Client, 
