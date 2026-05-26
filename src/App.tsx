@@ -1,21 +1,31 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { lazy, Suspense } from "react"
 
 import Prov from "./Prov"
-import Home from "./Pages/Home"
-import Register from "./Pages/Register"
-import Signin from "./Pages/Signin"
-import Room from "./Pages/Game"
+const Home=lazy(()=>import("./Pages/Home"))
+const Register=lazy(()=>import("./Pages/Register"))
+const Signin=lazy(()=>import("./Pages/Signin"))
+const Room=lazy(()=>import("./Pages/Game"))
 
 function App() {
     return (
         <BrowserRouter>
             <Prov>
-                <Routes>
-                    <Route path="/" element={<Home/>} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/signin" element={<Signin />} />
-                    <Route path="/room/:id" element={<Room/>}/>
-                </Routes>
+                <Suspense fallback={
+                    <div style={{
+                        background: "#0d1117",
+                        height: "100dvh",
+                        width: "100%",
+                    }}>
+
+                    </div>}>
+                    <Routes>
+                        <Route path="/" element={<Home/>} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/signin" element={<Signin />} />
+                        <Route path="/room/:id" element={<Room/>}/>
+                    </Routes>
+                </Suspense>
             </Prov>
         </BrowserRouter>
     )
