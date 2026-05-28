@@ -58,6 +58,9 @@ const Prov = ({ children }: { children: any }) => {
         if (leaveWindowActivate) toggleLeaveWindow()
         navigate("/signin")
     }
+    const goInfo=()=>{
+        navigate("/info")
+    }
     useEffect(() => {
         const socket = io(`${API_URL}`, {
             query: { name: user?.name, pass: user?.pass }
@@ -213,7 +216,7 @@ const Prov = ({ children }: { children: any }) => {
         messageText, setMessageText, leaveRoom,
         setReady, isMobile,leaveWindowActivate, toggleLeaveWindow,
         listState,toggleRooms,toggleCemetery,toggleRating,rating,
-        cemetery,setCemetery
+        cemetery,setCemetery,goInfo
     }), [
         user, rooms, loginText, passwordText,
         loginError, passwordError, messageText,
