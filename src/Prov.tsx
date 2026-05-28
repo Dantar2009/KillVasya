@@ -95,7 +95,14 @@ const Prov = ({ children }: { children: any }) => {
             socket.disconnect()
         }
     }, [user, navigate, setUser])
+    useEffect(() => {
+        if (!user) return;
 
+        const foundUser = rating.find((u: RatingUser) => u.name === user.name);
+        if (foundUser && foundUser.rating !== user.rating) {
+            setUser({ ...user, rating: foundUser.rating });
+        }
+    }, [rating]);
     const createRoom = useCallback((role: string) => {
         if (!user) {
             goRegister()

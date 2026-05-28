@@ -1,5 +1,5 @@
 export type User = {
-    id: number,
+    id: string,
     name: string,
     pass: string,
     rating: number
@@ -21,7 +21,6 @@ export type Room = {
     aiOtvet: string
 }
 export type RatingUser={
-    id:string,
     name:string,
     rating:number
 }

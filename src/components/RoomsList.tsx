@@ -24,8 +24,8 @@ const RoomsList = memo(() => {
             border: `1px solid ${colors.inputBorder}`,
             boxShadow: `0 4px 16px rgba(0, 0, 0, 0.25)`,
             marginBottom: 20,
-            maxHeight: "80vh",        // ✅ не вылезает
-            overflowY: "auto",        // ✅ скролл внутри если надо
+            maxHeight: "80vh",        
+            overflowY: "auto",        
         }}>
         
             <div style={{
@@ -108,7 +108,7 @@ const RoomsList = memo(() => {
                         </div>
                     ) : (
                         rating?.map((user: RatingUser, index: number) => (
-                            <RatingItem key={user.id} {...user} place={index + 1} />
+                            <RatingItem key={user.name} {...user} place={index + 1} />
                         ))
                     )
                 )}
