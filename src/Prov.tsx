@@ -7,7 +7,7 @@ import useIsMobile from "./hooks/useIsMobile"
 import useToggle from "./hooks/useToggle"
 import type { Grave, RatingUser, Room, User } from "./types"
 import useListToggle from "./hooks/useListToggle"
-
+import confetti from "canvas-confetti"
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
 
 const Prov = ({ children }: { children: any }) => {
@@ -26,6 +26,7 @@ const Prov = ({ children }: { children: any }) => {
     const [listState,toggleRooms,toggleCemetery,toggleRating]=useListToggle("rooms")
     const [rating,setRating]=useState<RatingUser[]>([])
     const [cemetery,setCemetery]=useState<Grave[]>([])
+    const [prevWinner,setPrevWinner] = useState<"killer" | "bodyguard" | "nowinner">("nowinner");
     const goHome = () => {
     setLoginError('')
     setPasswordError('')
@@ -202,7 +203,23 @@ const Prov = ({ children }: { children: any }) => {
         setMessageText('')  // ✅ сброс текста при выходе
         goHome()
     }
+    const createConfetti=useCallback(()=>{
+        for(let i=0.1;i<1;i+=0.1){
 
+            confetti({
+                particleCount: 20,
+                spread: 360,
+                origin: { y: -0.1, x: i },
+                angle: 270,
+                startVelocity: 10,      
+                gravity: 0.5,          
+                decay: 0.95,
+                ticks: 500,
+                scalar: 1,
+                drift: 0,              
+            });
+        }
+    },[])
     const contextValue = useMemo(() => ({
         user, setUser,
         loginText, setLoginText,
@@ -216,12 +233,12 @@ const Prov = ({ children }: { children: any }) => {
         messageText, setMessageText, leaveRoom,
         setReady, isMobile,leaveWindowActivate, toggleLeaveWindow,
         listState,toggleRooms,toggleCemetery,toggleRating,rating,
-        cemetery,setCemetery,goInfo
+        cemetery,setCemetery,goInfo,createConfetti,prevWinner,setPrevWinner
     }), [
         user, rooms, loginText, passwordText,
         loginError, passwordError, messageText,
         modalWindowActivate, isMobile,leaveWindowActivate,
-        listState,rating,cemetery
+        listState,rating,cemetery,prevWinner
     ])
     return (
         <MainContext.Provider value={contextValue}>

@@ -25,6 +25,7 @@ export default defineConfig([
       'react-hooks/exhaustive-deps': 'warn',
       '@typescript-eslint/no-non-null-assertion': 'off',
       'no-debugger': 'warn',
+      "react-hooks/set-state-in-effect": "off"
     },
   },
 ])

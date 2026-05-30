@@ -1,4 +1,4 @@
-// Game.tsx
+// Game.tsx — чистая версия без конфетти
 import { useContext, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import MainContext from "../MainContext"
@@ -11,12 +11,14 @@ import StyledText from "../components/StyledText"
 import LeaveModal from "../components/LeaveModal"
 import LeaveGameButton from "../components/LeaveGameButton"
 import PlayAgainButton from "../components/PlayAgainButton"
+import colors from "../data/colors"
 
 const Game = () => {
     const { rooms, user, setUser, leaveRoom, setReady, leaveWindowActivate, toggleLeaveWindow } = useContext(MainContext)
     const { id } = useParams()
     const room = rooms.find((r: Room) => r.id === id) ?? null
     const role = room?.killer?.name === user?.name ? "killer" : room?.bodyguard?.name === user?.name ? "bodyguard" : "viewer"
+    const { location, killer, bodyguard, killerText, bodyguardText, winner, aiOtvet, killerReady, bodyguardReady }: Room = room
 
     useEffect(() => {
         if (!room || !user) return
@@ -26,7 +28,6 @@ const Game = () => {
 
     if (!room) return <MainContainer><StyledText>Комната не найдена</StyledText></MainContainer>
 
-    const { location, killer, bodyguard, killerText, bodyguardText, winner, aiOtvet, killerReady, bodyguardReady } = room
     const done = winner !== "nowinner"
     const isPlayer = role === "killer" || role === "bodyguard"
 
@@ -37,7 +38,7 @@ const Game = () => {
             )}
 
             <div style={{ flex: 1, overflowY: "auto", paddingBottom: 12 }}>
-                <SystemMessage>
+                <SystemMessage isLoaded={true} lines={3}>
                     <StyledText>Локация: {location || "Ожидание..."}</StyledText>
                     <StyledText>🔪 {killer?.name || "Ожидание..."} {killer?.rating ? `Рейтинг: ${killer.rating}` : ""}</StyledText>
                     <StyledText>🛡️ {bodyguard?.name || "Ожидание..."} {bodyguard?.rating ? `Рейтинг: ${bodyguard.rating}` : ""}</StyledText>
@@ -55,15 +56,11 @@ const Game = () => {
                 {killerText && <UserMessage role="killer" text={killerText} isMine={role === "killer"} />}
                 {bodyguardText && <UserMessage role="bodyguard" text={bodyguardText} isMine={role === "bodyguard"} />}
 
-                {(killerText&&bodyguardText) && (
-                    <SystemMessage>
-                        <StyledText>🏆 Победитель: {winner === "killer" ? "Киллер" : winner === "bodyguard" ? "Телохранитель" : "Ожидание ответа ИИ..."}</StyledText>
-                        <StyledText>📝 {aiOtvet??""}</StyledText>
-                    </SystemMessage>
-                )}
-
-                {done && (
-                    <SystemMessage>
+                {(killerText && bodyguardText) && (
+                    <SystemMessage isLoaded={done || aiOtvet !== ""} lines={7}>
+                        <StyledText>🏆 Победитель: {winner === "killer" ? "Киллер" : winner === "bodyguard" ? "Телохранитель" : "Ошибка сервера"}</StyledText>
+                        <StyledText>📝 {aiOtvet ?? ""}</StyledText>
+                        <hr style={{ border: "none", borderTop: `1px solid ${colors.inputBorder}`, margin: "12px 0" }} />
                         <StyledText>Хотите сыграть снова?</StyledText>
                         <StyledText>Киллер: {killerReady ? "Готов" : "Не готов"}</StyledText>
                         <StyledText>Телохранитель: {bodyguardReady ? "Готов" : "Не готов"}</StyledText>
