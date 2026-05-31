@@ -14,19 +14,19 @@ import PlayAgainButton from "../components/PlayAgainButton"
 import colors from "../data/colors"
 
 const Game = () => {
-    const { rooms, user, setUser, leaveRoom, setReady, leaveWindowActivate, toggleLeaveWindow } = useContext(MainContext)
+    const { rooms, user, setUser, leaveRoom, setReady, leaveWindowActivate, toggleLeaveWindow} = useContext(MainContext)
     const { id } = useParams()
     const room = rooms.find((r: Room) => r.id === id) ?? null
     const role = room?.killer?.name === user?.name ? "killer" : room?.bodyguard?.name === user?.name ? "bodyguard" : "viewer"
-    const { location, killer, bodyguard, killerText, bodyguardText, winner, aiOtvet, killerReady, bodyguardReady }: Room = room
-
+    
     useEffect(() => {
         if (!room || !user) return
         const newRating = role === "killer" ? room.killer?.rating : room.bodyguard?.rating
         if (newRating !== undefined && newRating !== user.rating) setUser({ ...user, rating: newRating })
-    }, [room])
-
+        }, [room])
+    
     if (!room) return <MainContainer><StyledText>Комната не найдена</StyledText></MainContainer>
+    const { location, killer, bodyguard, killerText, bodyguardText, winner, aiOtvet, killerReady, bodyguardReady }: Room = room
 
     const done = winner !== "nowinner"
     const isPlayer = role === "killer" || role === "bodyguard"

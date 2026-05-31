@@ -27,6 +27,7 @@ const Prov = ({ children }: { children: any }) => {
     const [rating,setRating]=useState<RatingUser[]>([])
     const [cemetery,setCemetery]=useState<Grave[]>([])
     const [prevWinner,setPrevWinner] = useState<"killer" | "bodyguard" | "nowinner">("nowinner");
+    const messageAudioRef = useRef<HTMLAudioElement | null>(null);
     const goHome = () => {
     setLoginError('')
     setPasswordError('')
@@ -62,6 +63,23 @@ const Prov = ({ children }: { children: any }) => {
     const goInfo=()=>{
         navigate("/info")
     }
+    const createConfetti=useCallback(()=>{
+        for(let i=0.1;i<1;i+=0.1){
+
+            confetti({
+                particleCount: 20,
+                spread: 360,
+                origin: { y: -0.1, x: i },
+                angle: 270,
+                startVelocity: 10,      
+                gravity: 0.5,          
+                decay: 0.95,
+                ticks: 500,
+                scalar: 1,
+                drift: 0,              
+            });
+        }
+    },[])
     useEffect(() => {
         const socket = io(`${API_URL}`, {
             query: { name: user?.name, pass: user?.pass }
@@ -95,6 +113,18 @@ const Prov = ({ children }: { children: any }) => {
         socket.on("deleteRoom",(roomId:string)=>{
             setRooms(prev=>prev.filter((room:Room)=>room.id!==roomId))
         })
+        socket.on("messageSound",()=>{
+            if(!messageAudioRef.current){
+                messageAudioRef.current=new Audio("/messageSound.mp3")
+            }
+            messageAudioRef.current.currentTime = 0;
+            messageAudioRef.current.play().catch(() => {});
+            console.log("Sound")
+        })
+        socket.on("createConfetti",()=>{
+            createConfetti()
+        })
+        
         return () => {
             socket.disconnect()
         }
@@ -203,23 +233,7 @@ const Prov = ({ children }: { children: any }) => {
         setMessageText('')  // ✅ сброс текста при выходе
         goHome()
     }
-    const createConfetti=useCallback(()=>{
-        for(let i=0.1;i<1;i+=0.1){
-
-            confetti({
-                particleCount: 20,
-                spread: 360,
-                origin: { y: -0.1, x: i },
-                angle: 270,
-                startVelocity: 10,      
-                gravity: 0.5,          
-                decay: 0.95,
-                ticks: 500,
-                scalar: 1,
-                drift: 0,              
-            });
-        }
-    },[])
+    
     const contextValue = useMemo(() => ({
         user, setUser,
         loginText, setLoginText,
@@ -233,12 +247,13 @@ const Prov = ({ children }: { children: any }) => {
         messageText, setMessageText, leaveRoom,
         setReady, isMobile,leaveWindowActivate, toggleLeaveWindow,
         listState,toggleRooms,toggleCemetery,toggleRating,rating,
-        cemetery,setCemetery,goInfo,createConfetti,prevWinner,setPrevWinner
+        cemetery,setCemetery,goInfo,prevWinner,setPrevWinner,
+        
     }), [
         user, rooms, loginText, passwordText,
         loginError, passwordError, messageText,
         modalWindowActivate, isMobile,leaveWindowActivate,
-        listState,rating,cemetery,prevWinner
+        listState,rating,cemetery,prevWinner,
     ])
     return (
         <MainContext.Provider value={contextValue}>
